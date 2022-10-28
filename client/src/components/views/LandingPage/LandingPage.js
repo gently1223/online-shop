@@ -2,18 +2,20 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import { Icon, Row, Col, Card} from 'antd';
 import ImageSlider from '../../utils/ImageSlider'
+import CheckBox from './Sections/CheckBox'
 const { Meta } = Card;
 function LandingPage() {
 
     const [Products, setProducts] = useState([])
     const [Skip, setSkip] = useState(0)
     const [Limit, setLimit] = useState(8)
+    const [PostSize, setPostSize] = useState(0)
 
     useEffect(() => {
 
         const variables = {
             skip: Skip,
-            limit: Limit,
+            limit: Limit,  
         }
 
         getProducts(variables)
@@ -23,7 +25,9 @@ function LandingPage() {
         axios.post('/api/product/getProducts', variables)
             .then(response => {
                 if (response.data.success) {
-                    setProducts(response.data.products)
+                    setProducts([...Products, ...response.data.products])
+                    setPostSize(response.data.postSize)
+                    
                     console.log(response.data.products)
                 } else {
                     alert('Failed to fectch product datas')
@@ -38,8 +42,10 @@ function LandingPage() {
             skip: skip,
             limit: Limit,
         }
-        console.log(variables)
+
         getProducts(variables)
+
+        setSkip(skip)
     }
 
     const renderCards = Products.map((product, index) => {
@@ -56,6 +62,10 @@ function LandingPage() {
         </Col>
     })
 
+    const handleFilters = (filters, category) => {
+        console.log(filters)
+    }
+
     return (
         <div style={{ width: '75%', margin: '3rem auto'}}>
             <div style={{ textAlign: 'center' }}>
@@ -64,6 +74,10 @@ function LandingPage() {
 
                             
                 {/* Filter */}
+
+                <CheckBox 
+                    handleFilters={filters => handleFilters(filters, "continents")}
+                />
 
                 {/* Search */}
                 {Products.length === 0 ?
@@ -77,9 +91,12 @@ function LandingPage() {
                     </div>
                 }
                 <br /><br />
+
+                {PostSize >= Limit && 
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <button onClick={onLoadMore}>Load More</button>
-                </div>
+                </div>}
+                
         </div>
     )
 }

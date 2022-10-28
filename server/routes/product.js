@@ -51,7 +51,7 @@ router.post("/uploadProduct", auth, (req, res) => {
     })
 });
 
-router.post("/getProducts", auth, (req, res) => {
+router.post("/getProducts", (req, res) => {
     let order = req.body.order ? req.body.order : "desc";
     let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
     let limit = req.body.limit ? parseInt(req.body.limit) : 100;
@@ -64,7 +64,7 @@ router.post("/getProducts", auth, (req, res) => {
         .limit(limit)
         .exec((err, products) => {
             if (err) return res.status(400).json({ success: false, err})
-            res.status(200).json({ success: true, products })
+            res.status(200).json({ success: true, products, postSize: products.length })
         })
 });
 
