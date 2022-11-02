@@ -1,40 +1,9 @@
 import React, { useState } from 'react'
 import { Checkbox, Collapse } from 'antd';
+
 const { Panel } = Collapse;
 
-const continents = [
-    {
-        "_id": 1,
-        "name": "Africa"
-    },
-    {
-        "_id": 2,
-        "name": "Europe"
-    },
-    {
-        "_id": 3,
-        "name": "Asia"
-    },
-    {
-        "_id": 4,
-        "name": "North America"
-    },
-    {
-        "_id": 5,
-        "name": "South America"
-    },
-    {
-        "_id": 6,
-        "name": "Australia"
-    },
-    {
-        "_id": 7,
-        "name": "Antarctica"
-    }
-]
-
-
-function CheckBox() {
+function CheckBox(props) {
 
     const [Checked, setChecked] = useState([])
 
@@ -49,30 +18,27 @@ function CheckBox() {
         }
 
         setChecked(newChecked)
-        this.props.handleFilters(newChecked)
-
-        //update this checked information into Parent Component
-
+        props.handleFilters(newChecked)
     }
 
-    const renderCheckboxLists = () => continents.map((value, index) => {
+    const renderCheckboxLists = () => props.list && props.list.map((value, index) => (
         <React.Fragment key={index}>
             <Checkbox 
                 onChange={() => handleToggle(value._id)}
                 type="checkbox"
-                checked={Checked.indexOf(value._id) === -1 ? false : true }
+                checked={Checked.indexOf(value._id) === -1 ? false : true}
             />
             <span>{value.name}</span>
         </React.Fragment>
-    })
+    ))
 
   return (
     <div>
-        <Collapse defaultActiveKey={['0']}>
-            <Panel header key="1">
-                {renderCheckboxLists()}
-            </Panel>
-        </Collapse>
+      <Collapse defaultActiveKey={['0']} >
+        <Panel header="Continents Kind" key="1">
+            {renderCheckboxLists()}
+        </Panel>
+      </Collapse>
     </div>
   )
 }
